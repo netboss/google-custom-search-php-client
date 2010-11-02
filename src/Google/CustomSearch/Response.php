@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__).'/Response/Context.php');
 require_once(dirname(__FILE__).'/Response/Item.php');
+require_once(dirname(__FILE__).'/Response/Promotion.php');
 require_once(dirname(__FILE__).'/Response/Query.php');
 
 /**
@@ -30,6 +31,11 @@ class Google_CustomSearch_Response
      * @var array
      */
     protected $items = array();
+
+    /**
+     * @var array
+     */
+    protected $promotions = array();
 
     /**
      * @var array
@@ -87,6 +93,11 @@ class Google_CustomSearch_Response
             $this->context = new Google_CustomSearch_Response_Context($response->context);
         }
 
+        if (isset($response->promotions) && is_array($response->promotions))
+        {
+            $this->parsePromotions($response->promotions);
+        }
+
         if (isset($response->items) && is_array($response->items))
         {
             $this->parseItems($response->items);
@@ -113,6 +124,26 @@ class Google_CustomSearch_Response
         if (isset($queries->previousPage) && is_array($queries->previousPage) && isset($queries->previousPage[0]) && $queries->previousPage[0] instanceof stdClass)
         {
             $this->queries['previousPage'] = new Google_CustomSearch_Response_Query($queries->previousPage[0]);
+        }
+    }
+
+    /**
+     * Parses the "promotions" data from the response
+     *
+     * @param stdClass $promotions
+     */
+    protected function parsePromotions(array $promotions)
+    {
+        foreach($promotions as $promotion)
+        {
+            if (!($promotion instanceof stdClass))
+            {
+                throw new RuntimeException('Invalid promotion format.');
+            }
+
+            $promotionObject = new Google_CustomSearch_Response_Promotion($promotion);
+
+            array_push($this->items, $promotionObject);
         }
     }
 
