@@ -134,13 +134,19 @@ class Google_CustomSearch
     }
 
     /**
-     * Gets the Google Custom Search API response for this request.
+     * Gets the API response for this request and parses
+     * it into a Google_CustomSearch_Response
      *
-     * @return string
+     * @return Google_CustomSearch_Response
      */
     public function getResponse()
     {
         $this->validateArguments();
+
+        if (!class_exists('Google_CustomSearch_Response', true))
+        {
+            require_once(dirname(__FILE__).'/CustomSearch/Response.php');
+        }
 
         $cacheKey = md5($this->getApiRequestUrl());
 
@@ -149,7 +155,7 @@ class Google_CustomSearch
             return self::$responseCache[$cacheKey];
         }
 
-        $response = $this->executeApiRequest();
+        $response = new Google_CustomSearch_Response($this->executeApiRequest());
 
         return self::$responseCache[$cacheKey] = $response;
     }
@@ -183,8 +189,6 @@ class Google_CustomSearch
      */
     protected function executeApiRequest()
     {
-        return file_get_contents(dirname(__FILE__).'/../../tests/fixtures/customsearch.json');
-
         $handle = @curl_init();
         if (!$handle)
         {
