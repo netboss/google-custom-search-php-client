@@ -1,0 +1,186 @@
+{
+ "kind": "customsearch#search",
+ "url": {
+  "type": "application/json",
+  "template": "http://www.googleapis.com/customsearch/v1?q\u003d{searchTerms}&num\u003d{count?}&start\u003d{startIndex?}&hr\u003d{language?}&safe\u003d{safe?}&cx\u003d{cx?}&cref\u003d{cref?}&sort\u003d{sort?}&alt\u003djson"
+ },
+ "queries": {
+  "nextPage": [
+   {
+    "title": "Google Custom Search - lectures",
+    "totalResults": 7830000,
+    "searchTerms": "lectures",
+    "count": 10,
+    "startIndex": 11,
+    "inputEncoding": "utf8",
+    "outputEncoding": "utf8",
+    "cx": "017576662512468239146:omuauf_lfve"
+   }
+  ],
+  "request": [
+   {
+    "title": "Google Custom Search - lectures",
+    "totalResults": 7830000,
+    "searchTerms": "lectures",
+    "count": 10,
+    "startIndex": 1,
+    "inputEncoding": "utf8",
+    "outputEncoding": "utf8",
+    "cx": "017576662512468239146:omuauf_lfve"
+   }
+  ]
+ },
+ "context": {
+  "title": "Curriculum",
+  "facets": [
+   [
+    {
+     "label": "lectures",
+     "anchor": "Lectures"
+    }
+   ],
+   [
+    {
+     "label": "assignments",
+     "anchor": "Assignments"
+    }
+   ],
+   [
+    {
+     "label": "reference",
+     "anchor": "Reference"
+    }
+   ]
+  ]
+ },
+ "items": [
+  {
+   "kind": "customsearch#result",
+   "title": "EE364a: Lecture Videos",
+   "htmlTitle": "EE364a: \u003cb\u003eLecture\u003c/b\u003e Videos",
+   "link": "http://www.stanford.edu/class/ee364a/videos.html",
+   "displayLink": "www.stanford.edu",
+   "snippet": "Apr 7, 2010 ... Course materials. Lecture slides · Lecture videos (2008) · Review sessions.   Assignments. Homework · Reading. Exams. Final exam ...",
+   "htmlSnippet": "Apr 7, 2010 \u003cb\u003e...\u003c/b\u003e Course materials. \u003cb\u003eLecture\u003c/b\u003e slides · \u003cb\u003eLecture\u003c/b\u003e videos (2008) · Review sessions. \u003cbr\u003e  Assignments. Homework · Reading. Exams. Final exam \u003cb\u003e...\u003c/b\u003e"
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "Home § Harvard Natural Sciences Lecture Demonstrations",
+   "htmlTitle": "Home § Harvard Natural Sciences \u003cb\u003eLecture\u003c/b\u003e Demonstrations",
+   "link": "http://www.fas.harvard.edu/scidemos/",
+   "displayLink": "www.fas.harvard.edu",
+   "snippet": "A categorized catalog of lecture demonstrations available to undergraduate   Harvard Physics courses consisting of descriptions, diagrams, and photos.",
+   "htmlSnippet": "A categorized catalog of \u003cb\u003electure\u003c/b\u003e demonstrations available to undergraduate \u003cbr\u003e  Harvard Physics courses consisting of descriptions, diagrams, and photos."
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "lecture videos - University of Washington Computer Science ...",
+   "htmlTitle": "\u003cb\u003electure\u003c/b\u003e videos - University of Washington Computer Science \u003cb\u003e...\u003c/b\u003e",
+   "link": "http://www.cs.washington.edu/education/courses/csep590/06wi/lectures/",
+   "displayLink": "www.cs.washington.edu",
+   "snippet": "",
+   "htmlSnippet": ""
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "Discrete Math Lecture Notes",
+   "htmlTitle": "Discrete Math \u003cb\u003eLecture\u003c/b\u003e Notes",
+   "link": "http://www.cs.columbia.edu/~zeph/3203s04/lectures.html",
+   "displayLink": "www.cs.columbia.edu",
+   "snippet": "Jan 16, 2004 ... Discrete Math Lecture Notes. by Zeph Grunschlag. Topics. Lecture Download.   Introduction: course policies; Overview, Logic, Propositions, ppt ...",
+   "htmlSnippet": "Jan 16, 2004 \u003cb\u003e...\u003c/b\u003e Discrete Math \u003cb\u003eLecture\u003c/b\u003e Notes. by Zeph Grunschlag. Topics. \u003cb\u003eLecture\u003c/b\u003e Download. \u003cbr\u003e  Introduction: course policies; Overview, Logic, Propositions, ppt \u003cb\u003e...\u003c/b\u003e"
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "Dr. Adleman - Welcome — Association for Computing Machinery",
+   "htmlTitle": "Dr. Adleman - Welcome — Association for Computing Machinery",
+   "link": "http://www.acm.org/awards/turing_citations/rivest-shamir-adleman.html",
+   "displayLink": "www.acm.org",
+   "snippet": "",
+   "htmlSnippet": ""
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "Lectures material",
+   "htmlTitle": "\u003cb\u003eLectures\u003c/b\u003e material",
+   "link": "http://www.cs.utexas.edu/users/pauldj/lectures/lsc1-09/python/index.html",
+   "displayLink": "www.cs.utexas.edu",
+   "snippet": "Download the code shown during the lecture. Generators example; With construct   examples; Object behaviour customization: PrettyString example ...",
+   "htmlSnippet": "Download the code shown during the \u003cb\u003electure\u003c/b\u003e. Generators example; With construct \u003cbr\u003e  examples; Object behaviour customization: PrettyString example \u003cb\u003e...\u003c/b\u003e"
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "Lecture 9: Compilers",
+   "htmlTitle": "\u003cb\u003eLecture\u003c/b\u003e 9: Compilers",
+   "link": "http://www.cs.rutgers.edu/~mlittman/courses/cs105-06b/lectures/09compilers.pdf",
+   "displayLink": "www.cs.rutgers.edu",
+   "snippet": "Lecture 9: Compilers. CS105: Great Insights in Computer Science. Michael L.   Littman, Fall 2006. Expressions With Variables. • If we know A and B's ...",
+   "htmlSnippet": "\u003cb\u003eLecture\u003c/b\u003e 9: Compilers. CS105: Great Insights in Computer Science. Michael L. \u003cbr\u003e  Littman, Fall 2006. Expressions With Variables. • If we know A and B&#39;s \u003cb\u003e...\u003c/b\u003e",
+   "pagemap": {
+    "metatags": [
+     {
+      "author": "Michael Littman",
+      "creator": "pdftopdf filter",
+      "creationdate": "D:20061015171317-04'00'",
+      "moddate": "D:20061015171317-04'00'",
+      "producer": "Mac OS X 10.4.8 Quartz PDFContext"
+     }
+    ]
+   }
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "CS 152 Computer Architecture and Engineering Lecture 1 ...",
+   "htmlTitle": "CS 152 Computer Architecture and Engineering \u003cb\u003eLecture\u003c/b\u003e 1 \u003cb\u003e...\u003c/b\u003e",
+   "link": "http://www-inst.eecs.berkeley.edu/~cs152/sp09/lectures/L01-Intro.pdf",
+   "displayLink": "www-inst.eecs.berkeley.edu",
+   "snippet": "Jan 20, 2009 ... Lectures available online before noon, day of lecture ... Based on lectures,   problem sets, and labs. • 40% Labs (one per module) ...",
+   "htmlSnippet": "Jan 20, 2009 \u003cb\u003e...\u003c/b\u003e \u003cb\u003eLectures\u003c/b\u003e available online before noon, day of \u003cb\u003electure\u003c/b\u003e \u003cb\u003e...\u003c/b\u003e Based on \u003cb\u003electures\u003c/b\u003e, \u003cbr\u003e  problem sets, and labs. • 40% Labs (one per module) \u003cb\u003e...\u003c/b\u003e",
+   "pagemap": {
+    "metatags": [
+     {
+      "creationdate": "D:20090120190950-08'00'",
+      "moddate": "D:20090120190950-08'00'"
+     }
+    ]
+   }
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "Lecture 21: Genetic Algorithms",
+   "htmlTitle": "\u003cb\u003eLecture\u003c/b\u003e 21: Genetic Algorithms",
+   "link": "http://www.cs.rutgers.edu/~mlittman/courses/cs105-06b/lectures/21GA.pdf",
+   "displayLink": "www.cs.rutgers.edu",
+   "snippet": "Lecture 21: Genetic Algorithms. CS105: Great Insights in Computer Science.   Michael L. Littman, Fall 2006. Genetic Algorithms ...",
+   "htmlSnippet": "\u003cb\u003eLecture\u003c/b\u003e 21: Genetic Algorithms. CS105: Great Insights in Computer Science. \u003cbr\u003e  Michael L. Littman, Fall 2006. Genetic Algorithms \u003cb\u003e...\u003c/b\u003e",
+   "pagemap": {
+    "metatags": [
+     {
+      "author": "Michael Littman",
+      "creator": "pdftopdf filter",
+      "creationdate": "D:20061205205528-05'00'",
+      "moddate": "D:20061205205528-05'00'",
+      "producer": "Mac OS X 10.4.8 Quartz PDFContext"
+     }
+    ]
+   }
+  },
+  {
+   "kind": "customsearch#result",
+   "title": "Lecture T3: Grammar",
+   "htmlTitle": "\u003cb\u003eLecture\u003c/b\u003e T3: Grammar",
+   "link": "http://www.cs.princeton.edu/courses/archive/fall2000/cs126/lectures/T3-4up.pdf",
+   "displayLink": "www.cs.princeton.edu",
+   "snippet": "Last 3 lectures developed formal method for studying computation. Now, we get to   use it! ... Lecture T6: why we can't solve problems like the TSP?",
+   "htmlSnippet": "Last 3 \u003cb\u003electures\u003c/b\u003e developed formal method for studying computation. Now, we get to \u003cbr\u003e  use it! \u003cb\u003e...\u003c/b\u003e \u003cb\u003eLecture\u003c/b\u003e T6: why we can&#39;t solve problems like the TSP?",
+   "pagemap": {
+    "metatags": [
+     {
+      "creationdate": "D:191000907115632",
+      "producer": "Acrobat Distiller Command 3.01 for Solaris 2.3 and later (SPARC)"
+     }
+    ]
+   }
+  }
+ ]
+}
