@@ -1,7 +1,7 @@
 <?php
 
+require_once(dirname(__FILE__).'/Context/Facet.php');
 require_once(dirname(__FILE__).'/Data/DataAbstract.php');
-require_once(dirname(__FILE__).'/Facet.php');
 
 /**
  * Google_CustomSearch_Response_Context parses and defines a "context" in the API response
@@ -38,6 +38,18 @@ class Google_CustomSearch_Response_Context extends Google_CustomSearch_Response_
         $this->parseStandardProperties($resultData, array(
             'title'
         ));
+
+        $facets = self::getPropertyFromResponseData('facets', $resultData);
+        if (is_array($facets))
+        {
+            foreach($facets as $facet)
+            {
+                if (is_array($facet) && isset($facet[0]) && $facet[0] instanceof stdClass)
+                {
+                    array_push($this->facets, new Google_CustomSearch_Response_Context_Facet($facet[0]));
+                }
+            }
+        }
     }
 
     // ------------------------------------------------------

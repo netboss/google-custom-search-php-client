@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__).'/Data/DataAbstract.php');
-require_once(dirname(__FILE__).'/PageMap.php');
+require_once(dirname(__FILE__).'/Item/PageMap.php');
 
 /**
  * Google_CustomSearch_Response_Item parses and defines a "item" in the API response
@@ -41,7 +41,7 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
     protected $link;
 
     /**
-     * @var Google_CustomSearch_Response_PageMap
+     * @var Google_CustomSearch_Response_Item_PageMap
      */
     protected $pagemap;
 
@@ -84,7 +84,7 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
         $pagemap = self::getPropertyFromResponseData('pagemap', $resultData);
         if ($pagemap instanceof stdClass)
         {
-            $pagemap = new Google_CustomSearch_Response_PageMap($pagemap);
+            $pagemap = new Google_CustomSearch_Response_Item_PageMap($pagemap);
             if ($pagemap->hasDataObjects())
             {
                 $this->pagemap = $pagemap;
@@ -140,7 +140,7 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
     /**
      * Gets the pagemap for this search result.
      *
-     * @return Google_CustomSearch_Response_PageMap
+     * @return Google_CustomSearch_Response_Item_PageMap
      * @see https://code.google.com/apis/customsearch/docs/snippets.html#pagemaps
      */
     public function getPagemap()

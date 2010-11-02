@@ -1,13 +1,13 @@
 <?php
 
-require_once(dirname(__FILE__).'/Data/DataAbstract.php');
+require_once(dirname(__FILE__).'/../Data/DataAbstract.php');
 
 /**
- * Google_CustomSearch_Response_Facet parses and defines a "facet" in a "context" in the API response
+ * Google_CustomSearch_Response_Context_Facet parses and defines a "facet" in a "context" in the API response
  * 
  * @author Stephen Melrose <me@stephenmelrose.co.uk>
  */
-class Google_CustomSearch_Response_Facet extends Google_CustomSearch_Response_DataAbstract
+class Google_CustomSearch_Response_Context_Facet extends Google_CustomSearch_Response_DataAbstract
 {
     // ------------------------------------------------------
     // Properties

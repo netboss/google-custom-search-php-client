@@ -1,15 +1,15 @@
 <?php
 
-require_once(dirname(__FILE__).'/Data/DataAbstract.php');
+require_once(dirname(__FILE__).'/../Data/DataAbstract.php');
 require_once(dirname(__FILE__).'/PageMap/DataObject.php');
 
 /**
- * Google_CustomSearch_Response_PageMap parses and defines a "pagemap" in the API response
+ * Google_CustomSearch_Response_Item_PageMap parses and defines a "pagemap" in the API response
  * 
  * @author Stephen Melrose <me@stephenmelrose.co.uk>
  * @see https://code.google.com/apis/customsearch/docs/snippets.html#pagemaps
  */
-class Google_CustomSearch_Response_PageMap extends Google_CustomSearch_Response_DataAbstract
+class Google_CustomSearch_Response_Item_PageMap extends Google_CustomSearch_Response_DataAbstract
 {
     // ------------------------------------------------------
     // Properties
@@ -37,7 +37,7 @@ class Google_CustomSearch_Response_PageMap extends Google_CustomSearch_Response_
         {
             if (is_array($pageMapDataObject) && isset($pageMapDataObject[0]) && $pageMapDataObject[0] instanceof stdClass)
             {
-                $this->dataObjects[$key] = new Google_CustomSearch_Response_PageMap_DataObject($pageMapDataObject[0]);
+                $this->dataObjects[$key] = new Google_CustomSearch_Response_Item_PageMap_DataObject($pageMapDataObject[0]);
             }
         }
     }
@@ -50,7 +50,7 @@ class Google_CustomSearch_Response_PageMap extends Google_CustomSearch_Response_
      * Gets the specific DataObject for the given key.
      * 
      * @param string $key
-     * @return Google_CustomSearch_Response_PageMap_DataObject
+     * @return Google_CustomSearch_Response_Item_PageMap_DataObject
      */
     public function getDataObject($key)
     {
