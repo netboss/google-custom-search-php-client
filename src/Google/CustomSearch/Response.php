@@ -166,4 +166,68 @@ class Google_CustomSearch_Response
             array_push($this->items, $itemObject);
         }
     }
+
+    // ------------------------------------------------------
+    // Getters
+    // ------------------------------------------------------
+
+    /**
+     * Get the response context.
+     * 
+     * @return Google_CustomSearch_Response_Context
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * Get the response items.
+     *
+     * @return array
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
+     * Get the response promotions.
+     *
+     * @return array
+     */
+    public function getPromotions()
+    {
+        return $this->promotions;
+    }
+
+    /**
+     * Determines if there is a response context.
+     *
+     * @return boolean
+     */
+    public function hasContext()
+    {
+        return !is_null($this->getContext());
+    }
+
+    /**
+     * Determines if there are response items.
+     *
+     * @return boolean
+     */
+    public function hasItems()
+    {
+        return count($this->getItems()) > 0;
+    }
+
+    /**
+     * Determines if there are response promotions.
+     *
+     * @return boolean
+     */
+    public function hasPromotions()
+    {
+        return count($this->getPromotions()) > 0;
+    }
 }

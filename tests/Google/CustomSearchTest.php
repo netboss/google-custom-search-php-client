@@ -312,6 +312,26 @@ class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
 
         $response = $this->searchStub->getResponse();
 
+        $this->assertType('Google_CustomSearch_Response', $response);
+
+        $this->assertType('Google_CustomSearch_Response_Context', $response->getContext());
+        $this->assertTrue($response->getContext()->hasFacets());
+        $this->assertEquals(3, count($response->getContext()->getFacets()));
+        foreach($response->getContext()->getFacets() as $facet)
+        {
+            $this->assertType('Google_CustomSearch_Response_Context_Facet', $facet);
+        }
+
+        $this->assertTrue($response->hasItems());
+        $this->assertEquals(10, count($response->getItems()));
+        foreach($response->getItems() as $item)
+        {
+            $this->assertType('Google_CustomSearch_Response_Item', $item);
+        }
+
+        $this->assertFalse($response->hasPromotions());
+        $this->assertEquals(0, count($response->getPromotions()));
+
         $response2 = $this->searchStub->getResponse();
         $this->assertTrue($response === $response2);
     }
