@@ -23,7 +23,7 @@ class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
 
         $this->searchStub->expects($this->any())
                             ->method('executeApiRequest')
-                            ->will($this->returnValue(file_get_contents(dirname(__FILE__) . '/../fixtures/customsearch.json')));
+                            ->will($this->returnValue(file_get_contents(dirname(__FILE__) . '/Fixtures/customsearch.json')));
     }
 
     // ------------------------------------------------------
