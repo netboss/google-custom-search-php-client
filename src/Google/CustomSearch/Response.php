@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/ErrorException.php');
 require_once(dirname(__FILE__).'/Response/Context.php');
 require_once(dirname(__FILE__).'/Response/Result.php');
 require_once(dirname(__FILE__).'/Response/Promotion.php');
@@ -76,7 +77,7 @@ class Google_CustomSearch_Response
      */
     protected function parse($apiResponse)
     {
-        if (!is_string($apiResponse) || strlen(trim($apiResponse)) < 1)
+        if (!is_string($apiResponse))
         {
             throw new InvalidArgumentException('Invalid response format. Expected non-empty string.');
         }
@@ -84,42 +85,81 @@ class Google_CustomSearch_Response
         $response = @json_decode($apiResponse);
         if (!($response instanceof stdClass))
         {
-            throw new RuntimeException('The response data could not be JSON decoded, invalid format.');
+            throw new Google_CustomSearch_ErrorException(
+                'The response data could not be JSON decoded. Invalid format.',
+                Google_CustomSearch_ErrorException::RESPONSE_JSON_INVALID
+            );
         }
 
         if (isset($response->error))
         {
-            throw new RuntimeException(
+            throw new Google_CustomSearch_ErrorException(
                 sprintf(
-                    'API responded with error code "%s" (%s).',
+                    'API responded with error, code "%s", and message "%s".',
                     isset($response->error->code) ? $response->error->code : null,
                     isset($response->error->message) ? $response->error->message : null
-                )
+                ),
+                Google_CustomSearch_ErrorException::RESPONSE_API_ERROR
             );
         }
 
         if (!isset($response->kind) || $response->kind != self::KIND)
         {
-            throw new RuntimeException(sprintf('Invalid or missing response kind, expected "%s".', self::KIND));
+            throw new Google_CustomSearch_ErrorException(
+                sprintf('Invalid response kind. Expected "%s".', self::KIND),
+                Google_CustomSearch_ErrorException::RESPONSE_KIND_INVALID
+            );
         }
 
-        if (isset($response->queries) && $response->queries instanceof stdClass)
+        if (isset($response->queries))
         {
+            if (!($response->queries instanceof stdClass))
+            {
+                throw new Google_CustomSearch_ErrorException(
+                    'Invalid response queries. Invalid format.',
+                    Google_CustomSearch_ErrorException::RESPONSE_QUERIES_INVALID
+                );
+            }
+            
             $this->parseQueries($response->queries);
         }
 
-        if (isset($response->context) && $response->context instanceof stdClass)
+        if (isset($response->promotions))
         {
-            $this->context = new Google_CustomSearch_Response_Context($response->context);
-        }
+            if (!is_array($response->promotions))
+            {
+                throw new Google_CustomSearch_ErrorException(
+                    'Invalid response promotions. Invalid format.',
+                    Google_CustomSearch_ErrorException::RESPONSE_PROMOTIONS_INVALID
+                );
+            }
 
-        if (isset($response->promotions) && is_array($response->promotions))
-        {
             $this->parsePromotions($response->promotions);
         }
 
-        if (isset($response->items) && is_array($response->items))
+        if (isset($response->context))
         {
+            if (!($response->context instanceof stdClass))
+            {
+                throw new Google_CustomSearch_ErrorException(
+                    'Invalid response context. Invalid format.',
+                    Google_CustomSearch_ErrorException::RESPONSE_CONTEXT_INVALID
+                );
+            }
+            
+            $this->context = new Google_CustomSearch_Response_Context($response->context);
+        }
+
+        if (isset($response->items))
+        {
+            if (!is_array($response->items))
+            {
+                throw new Google_CustomSearch_ErrorException(
+                    'Invalid response items/results. Invalid format.',
+                    Google_CustomSearch_ErrorException::RESPONSE_ITEMS_INVALID
+                );
+            }
+            
             $this->parseResults($response->items);
         }
     }
@@ -131,19 +171,28 @@ class Google_CustomSearch_Response
      */
     protected function parseQueries(stdClass $queries)
     {
-        if (isset($queries->request) && is_array($queries->request) && isset($queries->request[0]) && $queries->request[0] instanceof stdClass)
-        {
-            $this->queries['request'] = new Google_CustomSearch_Response_Query($queries->request[0]);
-        }
+        $queriesData = array(
+            array('query' => 'request', 'errorCode' => Google_CustomSearch_ErrorException::QUERY_REQUEST_INVALID),
+            array('query' => 'nextPage', 'errorCode' => Google_CustomSearch_ErrorException::QUERY_NEXTPAGE_INVALID),
+            array('query' => 'previousPage', 'errorCode' => Google_CustomSearch_ErrorException::QUERY_PREVIOUSPAGE_INVALID)
+        );
 
-        if (isset($queries->nextPage) && is_array($queries->nextPage) && isset($queries->nextPage[0]) && $queries->nextPage[0] instanceof stdClass)
+        foreach($queriesData as $queryData)
         {
-            $this->queries['nextPage'] = new Google_CustomSearch_Response_Query($queries->nextPage[0]);
-        }
+            if (isset($queries->{$queryData['query']}))
+            {
+                if (!is_array($queries->{$queryData['query']}) ||
+                    !isset($queries->{$queryData['query']}[0]) ||
+                    !($queries->{$queryData['query']}[0] instanceof stdClass))
+                {
+                    throw new Google_CustomSearch_ErrorException(
+                        sprintf('Invalid response query "%s". Invalid format.', $queryData['query']),
+                        $queryData['errorCode']
+                    );
+                }
 
-        if (isset($queries->previousPage) && is_array($queries->previousPage) && isset($queries->previousPage[0]) && $queries->previousPage[0] instanceof stdClass)
-        {
-            $this->queries['previousPage'] = new Google_CustomSearch_Response_Query($queries->previousPage[0]);
+                $this->queries[$queryData['query']] = new Google_CustomSearch_Response_Query($queries->{$queryData['query']}[0]);
+            }
         }
     }
 
@@ -154,11 +203,14 @@ class Google_CustomSearch_Response
      */
     protected function parsePromotions(array $promotions)
     {
-        foreach($promotions as $promotion)
+        foreach($promotions as $key => $promotion)
         {
             if (!($promotion instanceof stdClass))
             {
-                throw new RuntimeException('Invalid promotion format.');
+                throw new Google_CustomSearch_ErrorException(
+                    sprintf('Invalid response promotion at index "%s". Invalid format.', $key),
+                    Google_CustomSearch_ErrorException::PROMOTION_INVALID
+                );
             }
 
             $promotionObject = new Google_CustomSearch_Response_Promotion($promotion);
@@ -173,11 +225,14 @@ class Google_CustomSearch_Response
      */
     protected function parseResults(array $results)
     {
-        foreach($results as $result)
+        foreach($results as $key => $result)
         {
             if (!($result instanceof stdClass))
             {
-                throw new RuntimeException('Invalid result format.');
+                throw new Google_CustomSearch_ErrorException(
+                    sprintf('Invalid response item at index "%s". Invalid format.', $key),
+                    Google_CustomSearch_ErrorException::ITEM_INVALID
+                );
             }
 
             $resultObject = new Google_CustomSearch_Response_Result($result);
@@ -189,7 +244,7 @@ class Google_CustomSearch_Response
     /**
      * Gets the array index for the current page in the pages array.
      *
-     * Note: Returns -1 when current page can not be found.
+     * Note: Returns FALSE when current page can not be found, please use ===.
      *
      * @return integer
      * @see getPages()
@@ -199,7 +254,7 @@ class Google_CustomSearch_Response
         $requestQuery = $this->getQuery(self::QUERY_REQUEST);
         if (!$requestQuery)
         {
-            return -1;
+            return false;
         }
         
         $pages = $this->getPages();
@@ -211,11 +266,11 @@ class Google_CustomSearch_Response
             }
         }
 
-        return -1;
+        return false;
     }
 
     /**
-     * Gets the pagination data for this search.
+     * Gets the pagination data for this search response.
      * 
      * @return array
      */
@@ -278,7 +333,7 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Determines if there is pagination data for this search.
+     * Determines if there is pagination data for this search response.
      *
      * @return boolean
      */

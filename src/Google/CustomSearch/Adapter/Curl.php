@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/../ErrorException.php');
 require_once(dirname(__FILE__).'/AdapterInterface.php');
 
 /**
@@ -21,7 +22,10 @@ class Google_CustomSearch_Adapter_Curl implements Google_CustomSearch_AdapterInt
         if (!$handle)
         {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException('Unable to create cURL session.');
+            throw new Google_CustomSearch_ErrorException(
+                'Unable to create cURL session.',
+                Google_CustomSearch_ErrorException::ADAPTER_CURL_UNABLE_INIT_CURL
+            );
             // @codeCoverageIgnoreEnd
         }
 
@@ -32,7 +36,10 @@ class Google_CustomSearch_Adapter_Curl implements Google_CustomSearch_AdapterInt
         $response = @curl_exec($handle);
         if (!$response)
         {
-            throw new RuntimeException('API request failed. curl_exec() returned FALSE.');
+            throw new Google_CustomSearch_ErrorException(
+                'API request failed. curl_exec() returned FALSE.',
+                Google_CustomSearch_ErrorException::ADAPTER_CURL_EXECUTE_FAILED
+            );
         }
 
         return $response;

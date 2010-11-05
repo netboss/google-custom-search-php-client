@@ -15,9 +15,12 @@ class Google_CustomSearch_Adapter_CurlTest extends PHPUnit_Framework_TestCase
         try
         {
             $adapter->executeRequest('invalid');
-            $this->fail('Excepted exception "RuntimeException" not thrown, invalid request URL.');
+            $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', Google_CustomSearch_ErrorException::ADAPTER_CURL_EXECUTE_FAILED));
         }
-        catch (RuntimeException $e) {}
+        catch (Google_CustomSearch_ErrorException $e)
+        {
+            $this->assertEquals(Google_CustomSearch_ErrorException::ADAPTER_CURL_EXECUTE_FAILED, $e->getCode());
+        }
 
         $response = $adapter->executeRequest('http://www.google.co.uk/');
         $this->assertType('string', $response);

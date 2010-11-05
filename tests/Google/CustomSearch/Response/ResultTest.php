@@ -17,9 +17,9 @@ class Google_CustomSearch_Response_ResultTest extends PHPUnit_Framework_TestCase
             $result = new Google_CustomSearch_Response_Result($resultData);
             $this->fail('Excepted exception "InvalidArgumentException" not thrown, invalid result "kind".');
         }
-        catch(RuntimeException $e)
+        catch(Google_CustomSearch_ErrorException $e)
         {
-            $this->assertTrue(true);
+            $this->assertEquals(Google_CustomSearch_ErrorException::ITEM_KIND_INVALID, $e->getCode());
         }
 
         $resultData = new stdClass();
@@ -30,9 +30,9 @@ class Google_CustomSearch_Response_ResultTest extends PHPUnit_Framework_TestCase
             $result = new Google_CustomSearch_Response_Result($resultData);
             $this->fail('Excepted exception "InvalidArgumentException" not thrown, invalid result "kind".');
         }
-        catch(RuntimeException $e)
+        catch(Google_CustomSearch_ErrorException $e)
         {
-            $this->assertTrue(true);
+            $this->assertEquals(Google_CustomSearch_ErrorException::ITEM_KIND_INVALID, $e->getCode());
         }
 
         $dataObject = new stdClass();

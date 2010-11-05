@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/../ErrorException.php');
 require_once(dirname(__FILE__).'/Data/DataAbstract.php');
 require_once(dirname(__FILE__).'/Result/PageMap.php');
 
@@ -69,7 +70,10 @@ class Google_CustomSearch_Response_Result extends Google_CustomSearch_Response_D
     {
         if (!isset($resultData->kind) || $resultData->kind != self::KIND)
         {
-            throw new RuntimeException(sprintf('Invalid or missing response result kind, expected "%s".', self::KIND));
+            throw new Google_CustomSearch_ErrorException(
+                sprintf('Invalid result kind. Expected "%s".', self::KIND),
+                Google_CustomSearch_ErrorException::ITEM_KIND_INVALID
+            );
         }
 
         $this->parseStandardProperties($resultData, array(

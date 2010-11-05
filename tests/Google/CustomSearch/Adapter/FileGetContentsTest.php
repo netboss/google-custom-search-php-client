@@ -24,9 +24,12 @@ class Google_CustomSearch_Adapter_FileGetContentsTest extends PHPUnit_Framework_
         try
         {
             $adapter->executeRequest(self::getFixturesDir() . '/invalid');
-            $this->fail('Excepted exception "RuntimeException" not thrown, invalid request URL.');
+            $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', Google_CustomSearch_ErrorException::ADAPTER_FILE_GET_CONTENTS_EXECUTE_FAILED));
         }
-        catch (RuntimeException $e) {}
+        catch (Google_CustomSearch_ErrorException $e)
+        {
+            $this->assertEquals(Google_CustomSearch_ErrorException::ADAPTER_FILE_GET_CONTENTS_EXECUTE_FAILED, $e->getCode());
+        }
 
         $response = $adapter->executeRequest(self::getFixturesDir() . '/kind_missing.json');
         $this->assertEquals(file_get_contents(self::getFixturesDir() . '/kind_missing.json'), $response);

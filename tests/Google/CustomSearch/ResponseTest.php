@@ -33,66 +33,71 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
     public function testParseJsonIncorrectFormat($data)
     {
         $this->setExpectedException('InvalidArgumentException');
-
         $response = new Google_CustomSearch_Response($data);
     }
 
     public function testParseJson()
     {
-        $fixtures_dir = self::getFixturesDir();
-
-        $testCases = array(
-            'invalid_json.json'
-        );
-
-        foreach($testCases as $testCase)
+        try
         {
-            try
-            {
-                $response = new Google_CustomSearch_Response(file_get_contents($fixtures_dir . $testCase));
-                $this->fail('Expected exception "RuntimeException" not thrown.');
-            }
-            catch(RuntimeException $e) {}
+            $response = new Google_CustomSearch_Response('invalid');
+            $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', Google_CustomSearch_ErrorException::RESPONSE_JSON_INVALID));
+        }
+        catch(Google_CustomSearch_ErrorException $e)
+        {
+            $this->assertEquals(Google_CustomSearch_ErrorException::RESPONSE_JSON_INVALID, $e->getCode());
         }
     }
 
-    public function testParseError()
+    public function dataParseError()
     {
         $fixtures_dir = self::getFixturesDir();
-
-        $testCases = array(
-            'error_500.json',
-            'error_412.json'
+        
+        return array(
+            array($fixtures_dir . 'error_500.json'),
+            array($fixtures_dir . 'error_412.json')
         );
+    }
 
-        foreach($testCases as $testCase)
+    /**
+     * @dataProvider dataParseError
+     */
+    public function testParseError($fixture)
+    {
+        try
         {
-            try
-            {
-                $response = new Google_CustomSearch_Response(file_get_contents($fixtures_dir . $testCase));
-                $this->fail('Expected exception "RuntimeException" not thrown.');
-            }
-            catch(RuntimeException $e) {}
+            $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+            $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', Google_CustomSearch_ErrorException::RESPONSE_API_ERROR));
+        }
+        catch(Google_CustomSearch_ErrorException $e)
+        {
+            $this->assertEquals(Google_CustomSearch_ErrorException::RESPONSE_API_ERROR, $e->getCode());
         }
     }
 
-    public function testParseKind()
+    public function dataParseKind()
     {
         $fixtures_dir = self::getFixturesDir();
 
-        $testCases = array(
-            'kind_missing.json',
-            'kind_invalid.json'
+        return array(
+            array($fixtures_dir . 'kind_missing.json'),
+            array($fixtures_dir . 'kind_invalid.json')
         );
+    }
 
-        foreach($testCases as $testCase)
+    /**
+     * @dataProvider dataParseKind
+     */
+    public function testParseKind($fixture)
+    {
+        try
         {
-            try
-            {
-                $response = new Google_CustomSearch_Response(file_get_contents($fixtures_dir . $testCase));
-                $this->fail('Expected exception "RuntimeException" not thrown.');
-            }
-            catch(RuntimeException $e) {}
+            $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+            $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', Google_CustomSearch_ErrorException::RESPONSE_KIND_INVALID));
+        }
+        catch(Google_CustomSearch_ErrorException $e)
+        {
+            $this->assertEquals(Google_CustomSearch_ErrorException::RESPONSE_KIND_INVALID, $e->getCode());
         }
     }
 
@@ -102,22 +107,40 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
 
         return array(
             array($fixtures_dir . 'queries_missing.json'),
-            array($fixtures_dir . 'queries_invalid.json'),
+            array($fixtures_dir . 'queries_invalid.json', Google_CustomSearch_ErrorException::RESPONSE_QUERIES_INVALID),
             array($fixtures_dir . 'queries-request_missing.json'),
-            array($fixtures_dir . 'queries-request_invalid_1.json'),
-            array($fixtures_dir . 'queries-request_invalid_2.json'),
-            array($fixtures_dir . 'queries-request_invalid_3.json'),
-            array($fixtures_dir . 'queries-request_valid.json', 1),
-            array($fixtures_dir . 'queries_valid.json', 3)
+            array($fixtures_dir . 'queries-request_invalid_1.json', Google_CustomSearch_ErrorException::QUERY_REQUEST_INVALID),
+            array($fixtures_dir . 'queries-request_invalid_2.json', Google_CustomSearch_ErrorException::QUERY_REQUEST_INVALID),
+            array($fixtures_dir . 'queries-request_invalid_3.json', Google_CustomSearch_ErrorException::QUERY_REQUEST_INVALID),
+            array($fixtures_dir . 'queries-nextPage_invalid.json', Google_CustomSearch_ErrorException::QUERY_NEXTPAGE_INVALID),
+            array($fixtures_dir . 'queries-previousPage_invalid.json', Google_CustomSearch_ErrorException::QUERY_PREVIOUSPAGE_INVALID),
+            array($fixtures_dir . 'queries-request_valid.json', null, 1),
+            array($fixtures_dir . 'queries_valid.json', null, 3)
         );
     }
 
     /**
      * @dataProvider dataParseQueries
      */
-    public function testParseQueries($fixture, $numberOfQueries = 0)
+    public function testParseQueries($fixture, $expectedErrorCode = null, $numberOfQueries = 0)
     {
-        $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        if (!is_null($expectedErrorCode))
+        {
+            try
+            {
+                $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+                $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', $expectedErrorCode));
+            }
+            catch(Google_CustomSearch_ErrorException $e)
+            {
+                $this->assertEquals($expectedErrorCode, $e->getCode());
+                return true;
+            }
+        }
+        else
+        {
+            $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        }
 
         $this->assertEquals($numberOfQueries > 0, $response->hasQueries());
         $this->assertEquals($numberOfQueries, count($response->getQueries()));
@@ -138,17 +161,33 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
 
         return array(
             array($fixtures_dir . 'context_missing.json'),
-            array($fixtures_dir . 'context_invalid.json'),
-            array($fixtures_dir . 'context_valid.json', true)
+            array($fixtures_dir . 'context_invalid.json', Google_CustomSearch_ErrorException::RESPONSE_CONTEXT_INVALID),
+            array($fixtures_dir . 'context_valid.json', null, true)
         );
     }
 
     /**
      * @dataProvider dataParseContext
      */
-    public function testParseContext($fixture, $hasContext = false)
+    public function testParseContext($fixture, $expectedErrorCode = null, $hasContext = false)
     {
-        $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        if (!is_null($expectedErrorCode))
+        {
+            try
+            {
+                $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+                $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', $expectedErrorCode));
+            }
+            catch(Google_CustomSearch_ErrorException $e)
+            {
+                $this->assertEquals($expectedErrorCode, $e->getCode());
+                return true;
+            }
+        }
+        else
+        {
+            $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        }
 
         $this->assertEquals($hasContext, $response->hasContext());
         if ($hasContext)
@@ -170,20 +209,34 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
 
         return array(
             array($fixtures_dir . 'promotions_missing.json'),
-            array($fixtures_dir . 'promotions_invalid_1.json'),
-            array($fixtures_dir . 'promotions_invalid_2.json', 0, true),
-            array($fixtures_dir . 'promotions_valid.json', 2)
+            array($fixtures_dir . 'promotions_invalid_1.json', Google_CustomSearch_ErrorException::RESPONSE_PROMOTIONS_INVALID),
+            array($fixtures_dir . 'promotions_invalid_2.json', Google_CustomSearch_ErrorException::PROMOTION_INVALID),
+            array($fixtures_dir . 'promotions_valid.json', null, 2)
         );
     }
 
     /**
      * @dataProvider dataParsePromotions
      */
-    public function testParsePromotions($fixture, $numberOfPromotions = 0, $expectError = false)
+    public function testParsePromotions($fixture, $expectedErrorCode = null, $numberOfPromotions = 0)
     {
-        $this->setExpectedException($expectError ? 'RuntimeException' : null);
-
-        $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        if (!is_null($expectedErrorCode))
+        {
+            try
+            {
+                $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+                $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', $expectedErrorCode));
+            }
+            catch(Google_CustomSearch_ErrorException $e)
+            {
+                $this->assertEquals($expectedErrorCode, $e->getCode());
+                return true;
+            }
+        }
+        else
+        {
+            $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        }
 
         $this->assertEquals($numberOfPromotions > 0, $response->hasPromotions());
         $this->assertEquals($numberOfPromotions, count($response->getPromotions()));
@@ -195,20 +248,34 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
 
         return array(
             array($fixtures_dir . 'items_missing.json'),
-            array($fixtures_dir . 'items_invalid_1.json'),
-            array($fixtures_dir . 'items_invalid_2.json', 0, true),
-            array($fixtures_dir . 'items_valid.json', 2)
+            array($fixtures_dir . 'items_invalid_1.json', Google_CustomSearch_ErrorException::RESPONSE_ITEMS_INVALID),
+            array($fixtures_dir . 'items_invalid_2.json', Google_CustomSearch_ErrorException::ITEM_INVALID),
+            array($fixtures_dir . 'items_valid.json', null, 2)
         );
     }
 
     /**
      * @dataProvider dataParseResults
      */
-    public function testParseResults($fixture, $numberOfResults = 0, $expectError = false)
+    public function testParseResults($fixture, $expectedErrorCode = null, $numberOfResults = 0)
     {
-        $this->setExpectedException($expectError ? 'RuntimeException' : null);
-        
-        $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        if (!is_null($expectedErrorCode))
+        {
+            try
+            {
+                $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+                $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', $expectedErrorCode));
+            }
+            catch(Google_CustomSearch_ErrorException $e)
+            {
+                $this->assertEquals($expectedErrorCode, $e->getCode());
+                return true;
+            }
+        }
+        else
+        {
+            $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+        }
 
         $this->assertEquals($numberOfResults > 0, $response->hasResults());
         $this->assertEquals($numberOfResults, count($response->getResults()));
@@ -236,7 +303,7 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider dataGetPages
      */
-    public function testGetPages($fixture, $pages = array(), $currentPageIndex = -1)
+    public function testGetPages($fixture, $pages = array(), $currentPageIndex = false)
     {
         $response = new Google_CustomSearch_Response(file_get_contents($fixture));
 
@@ -246,6 +313,6 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
         
         $this->assertTrue($responsePages === $response->getPages());
 
-        $this->assertEquals($currentPageIndex, $response->getCurrentPageIndex());
+        $this->assertTrue($currentPageIndex === $response->getCurrentPageIndex());
     }
 }
