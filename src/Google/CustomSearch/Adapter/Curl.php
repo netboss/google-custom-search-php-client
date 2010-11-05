@@ -35,12 +35,6 @@ class Google_CustomSearch_Adapter_Curl implements Google_CustomSearch_AdapterInt
             throw new RuntimeException('API request failed. curl_exec() returned FALSE.');
         }
 
-        $responseStatusCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        if ($responseStatusCode != 200)
-        {
-            throw new RuntimeException(sprintf('API request failed. Status code "%s", expected "200".', $responseStatusCode));
-        }
-
         return $response;
     }
 }

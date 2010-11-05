@@ -42,7 +42,45 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
         $fixtures_dir = self::getFixturesDir();
 
         $testCases = array(
-            'invalid_json.json',
+            'invalid_json.json'
+        );
+
+        foreach($testCases as $testCase)
+        {
+            try
+            {
+                $response = new Google_CustomSearch_Response(file_get_contents($fixtures_dir . $testCase));
+                $this->fail('Expected exception "RuntimeException" not thrown.');
+            }
+            catch(RuntimeException $e) {}
+        }
+    }
+
+    public function testParseError()
+    {
+        $fixtures_dir = self::getFixturesDir();
+
+        $testCases = array(
+            'error_500.json',
+            'error_412.json'
+        );
+
+        foreach($testCases as $testCase)
+        {
+            try
+            {
+                $response = new Google_CustomSearch_Response(file_get_contents($fixtures_dir . $testCase));
+                $this->fail('Expected exception "RuntimeException" not thrown.');
+            }
+            catch(RuntimeException $e) {}
+        }
+    }
+
+    public function testParseKind()
+    {
+        $fixtures_dir = self::getFixturesDir();
+
+        $testCases = array(
             'kind_missing.json',
             'kind_invalid.json'
         );

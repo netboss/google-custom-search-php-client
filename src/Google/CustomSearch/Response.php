@@ -87,6 +87,17 @@ class Google_CustomSearch_Response
             throw new RuntimeException('The response data could not be JSON decoded, invalid format.');
         }
 
+        if (isset($response->error))
+        {
+            throw new RuntimeException(
+                sprintf(
+                    'API responded with error code "%s" (%s).',
+                    isset($response->error->code) ? $response->error->code : null,
+                    isset($response->error->message) ? $response->error->message : null
+                )
+            );
+        }
+
         if (!isset($response->kind) || $response->kind != self::KIND)
         {
             throw new RuntimeException(sprintf('Invalid or missing response kind, expected "%s".', self::KIND));

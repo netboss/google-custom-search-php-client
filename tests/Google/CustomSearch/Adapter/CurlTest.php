@@ -19,13 +19,6 @@ class Google_CustomSearch_Adapter_CurlTest extends PHPUnit_Framework_TestCase
         }
         catch (RuntimeException $e) {}
 
-        try
-        {
-            $adapter->executeRequest('http://www.google.co.uk/404');
-            $this->fail('Excepted exception "RuntimeException" not thrown, URL returns 404.');
-        }
-        catch (RuntimeException $e) {}
-
         $response = $adapter->executeRequest('http://www.google.co.uk/');
         $this->assertType('string', $response);
         $this->assertTrue(strlen(trim($response)) > 0);

@@ -1,0 +1,15 @@
+{
+ "error": {
+  "errors": [
+   {
+    "domain": "global",
+    "reason": "conditionNotMet",
+    "message": "Nedd to provide a Custom Search Engine ID. Missing cx or cref parameter.",
+    "locationType": "header",
+    "location": "If-Match"
+   }
+  ],
+  "code": 412,
+  "message": "Nedd to provide a Custom Search Engine ID. Missing cx or cref parameter."
+ }
+}
