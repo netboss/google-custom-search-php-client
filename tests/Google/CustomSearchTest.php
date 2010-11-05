@@ -318,40 +318,4 @@ class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
 
         return $response;
     }
-
-    /**
-     * @depends testGetResponse
-     */
-    public function testGetResponseContext(Google_CustomSearch_Response $response)
-    {
-        $this->assertType('Google_CustomSearch_Response_Context', $response->getContext());
-        $this->assertTrue($response->getContext()->hasFacets());
-        $this->assertEquals(3, count($response->getContext()->getFacets()));
-        foreach($response->getContext()->getFacets() as $facet)
-        {
-            $this->assertType('Google_CustomSearch_Response_Context_Facet', $facet);
-        }
-    }
-
-    /**
-     * @depends testGetResponse
-     */
-    public function testGetResponseItems(Google_CustomSearch_Response $response)
-    {
-        $this->assertTrue($response->hasItems());
-        $this->assertEquals(10, count($response->getItems()));
-        foreach($response->getItems() as $item)
-        {
-            $this->assertType('Google_CustomSearch_Response_Item', $item);
-        }
-    }
-
-    /**
-     * @depends testGetResponse
-     */
-    public function testGetResponsePromotions(Google_CustomSearch_Response $response)
-    {
-        $this->assertFalse($response->hasPromotions());
-        $this->assertEquals(0, count($response->getPromotions()));
-    }
 }

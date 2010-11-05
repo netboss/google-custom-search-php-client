@@ -142,8 +142,7 @@ class Google_CustomSearch_Response
             }
 
             $promotionObject = new Google_CustomSearch_Response_Promotion($promotion);
-
-            array_push($this->items, $promotionObject);
+            array_push($this->promotions, $promotionObject);
         }
     }
 
@@ -202,6 +201,16 @@ class Google_CustomSearch_Response
     }
 
     /**
+     * Get the response queries.
+     *
+     * @return array
+     */
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+
+    /**
      * Determines if there is a response context.
      *
      * @return boolean
@@ -229,5 +238,15 @@ class Google_CustomSearch_Response
     public function hasPromotions()
     {
         return count($this->getPromotions()) > 0;
+    }
+
+    /**
+     * Determines if there are response queries.
+     *
+     * @return boolean
+     */
+    public function hasQueries()
+    {
+        return count($this->getQueries()) > 0;
     }
 }
