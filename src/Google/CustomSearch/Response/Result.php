@@ -1,15 +1,15 @@
 <?php
 
 require_once(dirname(__FILE__).'/Data/DataAbstract.php');
-require_once(dirname(__FILE__).'/Item/PageMap.php');
+require_once(dirname(__FILE__).'/Result/PageMap.php');
 
 /**
- * Google_CustomSearch_Response_Item parses and defines a "item" in the API response
+ * Google_CustomSearch_Response_Result parses and defines a "item" in the API response
  *
  * @author Stephen Melrose <me@stephenmelrose.co.uk>
  * @link https://code.google.com/apis/customsearch/v1/reference.html
  */
-class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_DataAbstract
+class Google_CustomSearch_Response_Result extends Google_CustomSearch_Response_DataAbstract
 {
     // ------------------------------------------------------
     // Constants
@@ -42,7 +42,7 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
     protected $link;
 
     /**
-     * @var Google_CustomSearch_Response_Item_PageMap
+     * @var Google_CustomSearch_Response_Result_PageMap
      */
     protected $pagemap;
 
@@ -69,7 +69,7 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
     {
         if (!isset($resultData->kind) || $resultData->kind != self::KIND)
         {
-            throw new RuntimeException(sprintf('Invalid or missing response item kind, expected "%s".', self::KIND));
+            throw new RuntimeException(sprintf('Invalid or missing response result kind, expected "%s".', self::KIND));
         }
 
         $this->parseStandardProperties($resultData, array(
@@ -84,7 +84,7 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
         $pagemap = self::getPropertyFromResponseData('pagemap', $resultData);
         if ($pagemap instanceof stdClass)
         {
-            $pagemap = new Google_CustomSearch_Response_Item_PageMap($pagemap);
+            $pagemap = new Google_CustomSearch_Response_Result_PageMap($pagemap);
             if ($pagemap->hasDataObjects())
             {
                 $this->pagemap = $pagemap;
@@ -140,7 +140,7 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
     /**
      * Gets the pagemap for this search result.
      *
-     * @return Google_CustomSearch_Response_Item_PageMap
+     * @return Google_CustomSearch_Response_Result_PageMap
      * @see https://code.google.com/apis/customsearch/docs/snippets.html#pagemaps
      */
     public function getPagemap()

@@ -1,8 +1,8 @@
 <?php
 
-require_once(dirname(__FILE__).'/../../../../../../src/Google/CustomSearch/Response/Item/PageMap/DataObject.php');
+require_once(dirname(__FILE__).'/../../../../../../src/Google/CustomSearch/Response/Result/PageMap/DataObject.php');
 
-class Google_CustomSearch_Response_Item_PageMap_DataObjectTest extends PHPUnit_Framework_TestCase
+class Google_CustomSearch_Response_Result_PageMap_DataObjectTest extends PHPUnit_Framework_TestCase
 {
     // ------------------------------------------------------
     // Tests
@@ -18,7 +18,7 @@ class Google_CustomSearch_Response_Item_PageMap_DataObjectTest extends PHPUnit_F
         $dataObjectData->invalid_3 = '5';
         $dataObjectData->property_3 = array();
 
-        $dataObject = new Google_CustomSearch_Response_Item_PageMap_DataObject($dataObjectData);
+        $dataObject = new Google_CustomSearch_Response_Result_PageMap_DataObject($dataObjectData);
 
         return $dataObject;
     }
@@ -26,7 +26,7 @@ class Google_CustomSearch_Response_Item_PageMap_DataObjectTest extends PHPUnit_F
     /**
      * @depends testConstruct
      */
-    public function testGenericGetters(Google_CustomSearch_Response_Item_PageMap_DataObject $dataObject)
+    public function testGenericGetters(Google_CustomSearch_Response_Result_PageMap_DataObject $dataObject)
     {
         $this->assertEquals('2', $dataObject->getProperty('property_1'));
         $this->assertEquals('4', $dataObject->getProperty('property_2'));

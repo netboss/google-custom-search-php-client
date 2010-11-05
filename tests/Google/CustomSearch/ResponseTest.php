@@ -135,7 +135,7 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($numberOfPromotions, count($response->getPromotions()));
     }
 
-    public function dataParseItems()
+    public function dataParseResults()
     {
         $fixtures_dir = self::getFixturesDir();
 
@@ -148,15 +148,15 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider dataParseItems
+     * @dataProvider dataParseResults
      */
-    public function testParseItems($fixture, $numberOfItems = 0, $expectError = false)
+    public function testParseResults($fixture, $numberOfResults = 0, $expectError = false)
     {
         $this->setExpectedException($expectError ? 'RuntimeException' : null);
         
         $response = new Google_CustomSearch_Response(file_get_contents($fixture));
 
-        $this->assertEquals($numberOfItems > 0, $response->hasItems());
-        $this->assertEquals($numberOfItems, count($response->getItems()));
+        $this->assertEquals($numberOfResults > 0, $response->hasResults());
+        $this->assertEquals($numberOfResults, count($response->getResults()));
     }
 }

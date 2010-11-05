@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__).'/Response/Context.php');
-require_once(dirname(__FILE__).'/Response/Item.php');
+require_once(dirname(__FILE__).'/Response/Result.php');
 require_once(dirname(__FILE__).'/Response/Promotion.php');
 require_once(dirname(__FILE__).'/Response/Query.php');
 
@@ -30,7 +30,7 @@ class Google_CustomSearch_Response
     /**
      * @var array
      */
-    protected $items = array();
+    protected $results = array();
 
     /**
      * @var array
@@ -100,7 +100,7 @@ class Google_CustomSearch_Response
 
         if (isset($response->items) && is_array($response->items))
         {
-            $this->parseItems($response->items);
+            $this->parseResults($response->items);
         }
     }
 
@@ -147,22 +147,22 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Parses the "items" data from the response
+     * Parses the "results" data from the response
      *
-     * @param stdClass $items
+     * @param stdClass $results
      */
-    protected function parseItems(array $items)
+    protected function parseResults(array $results)
     {
-        foreach($items as $item)
+        foreach($results as $result)
         {
-            if (!($item instanceof stdClass))
+            if (!($result instanceof stdClass))
             {
-                throw new RuntimeException('Invalid item format.');
+                throw new RuntimeException('Invalid result format.');
             }
 
-            $itemObject = new Google_CustomSearch_Response_Item($item);
+            $resultObject = new Google_CustomSearch_Response_Result($result);
 
-            array_push($this->items, $itemObject);
+            array_push($this->results, $resultObject);
         }
     }
 
@@ -171,23 +171,14 @@ class Google_CustomSearch_Response
     // ------------------------------------------------------
 
     /**
-     * Get the response context.
+     * Get metadata about the particular search engine
+     * that was used for performing the search query.
      * 
      * @return Google_CustomSearch_Response_Context
      */
     public function getContext()
     {
         return $this->context;
-    }
-
-    /**
-     * Get the response items.
-     *
-     * @return array
-     */
-    public function getItems()
-    {
-        return $this->items;
     }
 
     /**
@@ -211,6 +202,16 @@ class Google_CustomSearch_Response
     }
 
     /**
+     * Get the set of search results.
+     *
+     * @return array
+     */
+    public function getResults()
+    {
+        return $this->results;
+    }
+
+    /**
      * Determines if there is a response context.
      *
      * @return boolean
@@ -218,16 +219,6 @@ class Google_CustomSearch_Response
     public function hasContext()
     {
         return !is_null($this->getContext());
-    }
-
-    /**
-     * Determines if there are response items.
-     *
-     * @return boolean
-     */
-    public function hasItems()
-    {
-        return count($this->getItems()) > 0;
     }
 
     /**
@@ -248,5 +239,15 @@ class Google_CustomSearch_Response
     public function hasQueries()
     {
         return count($this->getQueries()) > 0;
+    }
+
+    /**
+     * Determines if there are response results.
+     *
+     * @return boolean
+     */
+    public function hasResults()
+    {
+        return count($this->getResults()) > 0;
     }
 }

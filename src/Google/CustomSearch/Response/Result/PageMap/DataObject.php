@@ -3,14 +3,14 @@
 require_once(dirname(__FILE__).'/../../Data/DataAbstract.php');
 
 /**
- * Google_CustomSearch_Response_Item_PageMap_DataObject parses and
+ * Google_CustomSearch_Response_Result_PageMap_DataObject parses and
  * defines a pagemap "data object" in the API response
  * 
  * @author Stephen Melrose <me@stephenmelrose.co.uk>
  * @link https://code.google.com/apis/customsearch/v1/reference.html
  * @link https://code.google.com/apis/customsearch/docs/snippets.html#pagemaps
  */
-class Google_CustomSearch_Response_Item_PageMap_DataObject extends Google_CustomSearch_Response_DataAbstract
+class Google_CustomSearch_Response_Result_PageMap_DataObject extends Google_CustomSearch_Response_DataAbstract
 {
     // ------------------------------------------------------
     // Properties
