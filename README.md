@@ -20,13 +20,15 @@ Simply download the client library and add the `src` folder to your project.
 Usage
 -----
 
-    require_once('src/Google/CustomSearch.php);
+    require_once('src/Google/CustomSearch.php');
 
-    $search = new Google_CustomSearch('search terms');
+    $search = new Google_CustomSearch('lectures');
     $search->setApiKey('API_KEY');
     $search->setCustomSearchEngineId('017576662512468239146:omuauf_lfve');
 
     $response = $search->getResponse();
+
+    var_dump($response);
 
 Testing
 -------
