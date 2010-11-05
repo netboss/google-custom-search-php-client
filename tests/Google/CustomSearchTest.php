@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../src/Google/CustomSearch/Adapter/FileGetContents.php');
 require_once(dirname(__FILE__).'/../../src/Google/CustomSearch.php');
 
 class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
@@ -37,6 +38,18 @@ class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
 
         $search = new Google_CustomSearch('Google');
         $this->assertEquals('Google', $search->getQuery());
+    }
+
+    /**
+     * @dataProvider dataSettingApiKey
+     */
+    public function testSettingAdapter($expectError, $data)
+    {
+        $this->assertType('Google_CustomSearch_Adapter_Curl', $this->searchStub->getAdapter());
+
+        $adapter = new Google_CustomSearch_Adapter_FileGetContents();
+        $this->assertType('Google_CustomSearch', $this->searchStub->setAdapter($adapter));
+        $this->assertTrue($adapter === $this->searchStub->getAdapter());
     }
 
     public function dataSettingApiKey()
@@ -279,10 +292,7 @@ class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
             $this->searchStub->getResponse();
             $this->fail('Excepted exception "LogicException" not thrown, API key missing.');
         }
-        catch(LogicException $e)
-        {
-            $this->assertTrue(true);
-        }
+        catch(LogicException $e) {}
 
         $this->searchStub->setApiKey('key');
 
@@ -291,10 +301,7 @@ class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
             $this->searchStub->getResponse();
             $this->fail('Excepted exception "LogicException" not thrown, CSE ID or spec URL missing.');
         }
-        catch(LogicException $e)
-        {
-            $this->assertTrue(true);
-        }
+        catch(LogicException $e) {}
 
         $this->searchStub->setCustomSearchEngineId('017576662512468239146:omuauf_lfve');
         
@@ -303,10 +310,7 @@ class Google_CustomSearchTest extends PHPUnit_Framework_TestCase
             $this->searchStub->getResponse();
             $this->fail('Excepted exception "LogicException" not thrown, query missing.');
         }
-        catch(LogicException $e)
-        {
-            $this->assertTrue(true);
-        }
+        catch(LogicException $e) {}
 
         $this->searchStub->setQuery('lectures');
 

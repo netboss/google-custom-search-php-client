@@ -1,5 +1,7 @@
 <?php
 
+require_once(dirname(__FILE__).'/CustomSearch/Adapter/Curl.php');
+
 /**
  * Google_CustomSearch performs a search using the Google Custom Search API
  *
@@ -40,6 +42,11 @@ class Google_CustomSearch
      * @var array
      */
     private static $responseCache = array();
+
+    /**
+     * @var Google_CustomSearch_AdapterInterface
+     */
+    protected $adapter;
 
     /**
      * @var string
@@ -96,6 +103,8 @@ class Google_CustomSearch
         {
             $this->setQuery($query);
         }
+
+        $this->adapter = new Google_CustomSearch_Adapter_Curl();
     }
 
     // ------------------------------------------------------
@@ -135,7 +144,7 @@ class Google_CustomSearch
 
     /**
      * Gets the API response for this request and parses
-     * it into a Google_CustomSearch_Response
+     * it into a Google_CustomSearch_Response.
      *
      * @return Google_CustomSearch_Response
      */
@@ -143,10 +152,12 @@ class Google_CustomSearch
     {
         $this->validateArguments();
 
+        // @codeCoverageIgnoreStart
         if (!class_exists('Google_CustomSearch_Response', true))
         {
             require_once(dirname(__FILE__).'/CustomSearch/Response.php');
         }
+        // @codeCoverageIgnoreEnd
 
         $cacheKey = md5($this->getApiRequestUrl());
 
@@ -182,41 +193,29 @@ class Google_CustomSearch
     }
 
     /**
-     * Gets the raw Google Custom Search API response for this request.
+     * Executes the API request and returns the raw response.
      *
      * @return string
      * @codeCoverageIgnore
      */
     protected function executeApiRequest()
     {
-        $handle = @curl_init();
-        if (!$handle)
-        {
-            throw new RuntimeException('Unable to create cURL session.');
-        }
-
-        curl_setopt($handle, CURLOPT_HEADER, false);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($handle, CURLOPT_URL, $this->getApiRequestUrl());
-
-        $response = @curl_exec($handle);
-        if (!$response)
-        {
-            throw new RuntimeException('API request failed. curl_exec() returned FALSE.');
-        }
-
-        $responseStatusCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        if ($responseStatusCode != 200)
-        {
-            throw new RuntimeException(sprintf('API request failed. Status code not 200 OK, instead "%s".', $responseStatusCode));
-        }
-
-        return $response;
+        return $this->getAdapter()->executeRequest($this->getApiRequestUrl());
     }
 
     // ------------------------------------------------------
     // Property getters/setters
     // ------------------------------------------------------
+
+    /**
+     * Gets the API request adapter.
+     *
+     * @return Google_CustomSearch_AdapterInterface
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
 
     /**
      * Gets the API key.
@@ -299,6 +298,18 @@ class Google_CustomSearch
     public function getStartIndex()
     {
         return $this->startIndex;
+    }
+
+    /**
+     * Sets the API request adapter.
+     *
+     * @param Google_CustomSearch_AdapterInterface $adapter
+     * @return Google_CustomSearch
+     */
+    public function setAdapter(Google_CustomSearch_AdapterInterface $adapter)
+    {
+        $this->adapter = $adapter;
+        return $this;
     }
 
     /**
