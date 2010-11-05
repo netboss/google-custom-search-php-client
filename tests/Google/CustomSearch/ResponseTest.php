@@ -83,6 +83,15 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($numberOfQueries > 0, $response->hasQueries());
         $this->assertEquals($numberOfQueries, count($response->getQueries()));
+
+        if ($numberOfQueries > 0)
+        {
+            $this->assertType('Google_CustomSearch_Response_Query', $response->getQuery(Google_CustomSearch_Response::QUERY_REQUEST));
+        }
+        else
+        {
+            $this->assertNull($response->getQuery(Google_CustomSearch_Response::QUERY_REQUEST));
+        }
     }
 
     public function dataParseContext()
@@ -107,6 +116,13 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
         if ($hasContext)
         {
             $this->assertType('Google_CustomSearch_Response_Context', $response->getContext());
+            $this->assertType('array', $response->getContextFacets());
+            $this->assertEquals(0, count($response->getContextFacets()));
+        }
+        else
+        {
+            $this->assertNull($response->getContext());
+            $this->assertNull($response->getContextFacets());
         }
     }
 
@@ -158,5 +174,40 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($numberOfResults > 0, $response->hasResults());
         $this->assertEquals($numberOfResults, count($response->getResults()));
+    }
+
+    public function dataGetPages()
+    {
+        $fixtures_dir = self::getFixturesDir();
+
+        return array(
+            array($fixtures_dir . 'queries_missing.json'),
+            array($fixtures_dir . 'pages_invalid_1.json'),
+            array(
+                $fixtures_dir . 'pages_valid.json',
+                array(
+                    array('label' => '1', 'startIndex' => 1),
+                    array('label' => '2', 'startIndex' => 2),
+                    array('label' => '3', 'startIndex' => 12),
+                ),
+                2
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider dataGetPages
+     */
+    public function testGetPages($fixture, $pages = array(), $currentPageIndex = -1)
+    {
+        $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+
+        $responsePages = $response->getPages();
+        $this->assertEquals($pages != array(), $response->hasPages());
+        $this->assertEquals($pages, $responsePages);
+        
+        $this->assertTrue($responsePages === $response->getPages());
+
+        $this->assertEquals($currentPageIndex, $response->getCurrentPageIndex());
     }
 }

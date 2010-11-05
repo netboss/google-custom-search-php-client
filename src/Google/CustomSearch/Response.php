@@ -18,6 +18,10 @@ class Google_CustomSearch_Response
     
     const KIND = 'customsearch#search';
 
+    const QUERY_REQUEST = 'request';
+    const QUERY_NEXT_PAGE = 'nextPage';
+    const QUERY_PREVIOUS_PAGE = 'previousPage';
+
     // ------------------------------------------------------
     // Properties
     // ------------------------------------------------------
@@ -31,6 +35,11 @@ class Google_CustomSearch_Response
      * @var array
      */
     protected $results = array();
+
+    /**
+     * @var array
+     */
+    protected $pages;
 
     /**
      * @var array
@@ -166,12 +175,113 @@ class Google_CustomSearch_Response
         }
     }
 
+    /**
+     * Gets the array index for the current page in the pages array.
+     *
+     * Note: Returns -1 when current page can not be found.
+     *
+     * @return integer
+     * @see getPages()
+     */
+    public function getCurrentPageIndex()
+    {
+        $requestQuery = $this->getQuery(self::QUERY_REQUEST);
+        if (!$requestQuery)
+        {
+            return -1;
+        }
+        
+        $pages = $this->getPages();
+        foreach($pages as $key => $page)
+        {
+            if ($page['startIndex'] == $requestQuery->getStartIndex())
+            {
+                return $key;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Gets the pagination data for this search.
+     * 
+     * @return array
+     */
+    public function getPages()
+    {
+        if (!is_null($this->pages))
+        {
+            return $this->pages;
+        }
+
+        $requestQuery = $this->getQuery(self::QUERY_REQUEST);
+        if (!$requestQuery)
+        {
+            return $this->pages = array();
+        }
+
+        $startIndex = $requestQuery->getStartIndex();
+        $count = $requestQuery->getCount();
+
+        foreach($this->getQueries() as $query)
+        {
+            if ($query->getCount() > $count)
+            {
+                $count = $query->getCount();
+            }
+        }
+
+        if ($startIndex < 1 || $count < 1 || count($this->getQueries()) == 1)
+        {
+            return $this->pages = array();
+        }
+
+        $pageStartIndex = $startIndex;
+        while($pageStartIndex > 1)
+        {
+            $pageStartIndex -= $count;
+        }
+
+        $maxStartIndex = 101 - $count;
+        if ($requestQuery->getCount() != $count || is_null($this->getQuery(self::QUERY_NEXT_PAGE)))
+        {
+            $maxStartIndex = $requestQuery->getStartIndex();
+        }
+
+        $page = 1;
+        $pages = array();
+        
+        while($pageStartIndex <= $maxStartIndex)
+        {
+            array_push($pages, array(
+                'label'      => (string) $page,
+                'startIndex' => ($pageStartIndex >= 1 ? $pageStartIndex : 1)
+            ));
+
+            $page++;
+            $pageStartIndex += $count;
+        }
+
+        return $this->pages = $pages;
+    }
+
+    /**
+     * Determines if there is pagination data for this search.
+     *
+     * @return boolean
+     */
+    public function hasPages()
+    {
+        return count($this->getPages()) > 0;
+    }
+
     // ------------------------------------------------------
     // Getters
     // ------------------------------------------------------
 
     /**
-     * Get metadata about the particular search engine
+     * Gets metadata about the particular search engine
      * that was used for performing the search query.
      * 
      * @return Google_CustomSearch_Response_Context
@@ -182,9 +292,28 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Get the response promotions.
+     * Gets a set of Facet objects you can use for refining a search.
+     * 
+     * @return array
+     */
+    public function getContextFacets()
+    {
+        if ($this->hasContext())
+        {
+            return $this->getContext()->getFacets();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the set of subscribed links results.
+     *
+     * Note: Present only if the custom search engine's configuration
+     * files define any subscribed links for the given query.
      *
      * @return array
+     * @link https://code.google.com/apis/customsearch/docs/special_results.html#sl
      */
     public function getPromotions()
     {
@@ -192,7 +321,8 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Get the response queries.
+     * Gets the query metadata, keyed by role name
+     * (e.g. request, nextPage, previousPage).
      *
      * @return array
      */
@@ -202,7 +332,24 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Get the set of search results.
+     * Gets a specific query metadata by keyed role name.
+     * 
+     * @param string $query
+     * @return Google_CustomSearch_Response_Query
+     * @see QUERY_REQUEST, QUERY_NEXT_PAGE, QUERY_PREVIOUS_PAGE
+     */
+    public function getQuery($query = self::QUERY_REQUEST)
+    {
+        if ($this->hasQueries() && isset($this->queries[$query]))
+        {
+            return $this->queries[$query];
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the set of custom search results.
      *
      * @return array
      */
@@ -212,7 +359,8 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Determines if there is a response context.
+     * Determines if there is metadata about the particular search engine
+     * that was used for performing the search query.
      *
      * @return boolean
      */
@@ -222,9 +370,13 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Determines if there are response promotions.
+     * Determines if there are a set of subscribed links results.
+     *
+     * Note: Present only if the custom search engine's configuration
+     * files define any subscribed links for the given query.
      *
      * @return boolean
+     * @link https://code.google.com/apis/customsearch/docs/special_results.html#sl
      */
     public function hasPromotions()
     {
@@ -232,7 +384,8 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Determines if there are response queries.
+     * Determines if there are query metadata, keyed by role name
+     * (e.g. request, nextPage, previousPage).
      *
      * @return boolean
      */
@@ -242,7 +395,7 @@ class Google_CustomSearch_Response
     }
 
     /**
-     * Determines if there are response results.
+     * Determines if there are search results.
      *
      * @return boolean
      */
