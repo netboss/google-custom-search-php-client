@@ -14,11 +14,11 @@ class Google_CustomSearch_Response_ContextTest extends PHPUnit_Framework_TestCas
         $facet->anchor = '1';
         $facet->label = '2';
 
-        $resultData = new stdClass();
-        $resultData->invalid_1 = '1';
-        $resultData->title = '2';
-        $resultData->invalid_2 = '3';
-        $resultData->facets = array(
+        $contextData = new stdClass();
+        $contextData->invalid_1 = '1';
+        $contextData->title = '2';
+        $contextData->invalid_2 = '3';
+        $contextData->facets = array(
             true,
             'invalid',
             array(
@@ -33,19 +33,19 @@ class Google_CustomSearch_Response_ContextTest extends PHPUnit_Framework_TestCas
             )
         );
 
-        $result = new Google_CustomSearch_Response_Context($resultData);
+        $context = new Google_CustomSearch_Response_Context($contextData);
 
-        return $result;
+        return $context;
     }
 
     /**
      * @depends testConstruct
      */
-    public function testGenericGetters(Google_CustomSearch_Response_Context $result)
+    public function testGenericGetters(Google_CustomSearch_Response_Context $context)
     {
-        $this->assertEquals('2', $result->getTitle());
-        $this->assertTrue($result->hasFacets());
-        $this->assertType('array', $result->getFacets());
-        $this->assertEquals(2, count($result->getFacets()));
+        $this->assertEquals('2', $context->getTitle());
+        $this->assertTrue($context->hasFacets());
+        $this->assertType('array', $context->getFacets());
+        $this->assertEquals(2, count($context->getFacets()));
     }
 }

@@ -7,6 +7,7 @@ require_once(dirname(__FILE__).'/Item/PageMap.php');
  * Google_CustomSearch_Response_Item parses and defines a "item" in the API response
  *
  * @author Stephen Melrose <me@stephenmelrose.co.uk>
+ * @link https://code.google.com/apis/customsearch/v1/reference.html
  */
 class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_DataAbstract
 {
@@ -76,7 +77,6 @@ class Google_CustomSearch_Response_Item extends Google_CustomSearch_Response_Dat
             'htmlSnippet',
             'htmlTitle',
             'link',
-            'pagemap',
             'snippet',
             'title'
         ));

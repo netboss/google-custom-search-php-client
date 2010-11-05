@@ -14,31 +14,38 @@ class Google_CustomSearch_Response_Item_PageMapTest extends PHPUnit_Framework_Te
         $dataObject->property1 = '1';
         $dataObject->property2 = '2';
 
-        $resultData = new stdClass();
-        $resultData->test1 = array(
+        $pageMapData = new stdClass();
+        $pageMapData->test1 = array(
             $dataObject
         );
-        $resultData->invalid_1 = $dataObject;
-        $resultData->test2 = array(
+        $pageMapData->invalid_1 = $dataObject;
+        $pageMapData->test2 = array(
             $dataObject
         );
-        $resultData->invalid_2 = array();
-        $resultData->invalid_3 = array(
+        $pageMapData->invalid_2 = array();
+        $pageMapData->invalid_3 = array(
             1 => $dataObject
         );
 
-        $result = new Google_CustomSearch_Response_Item_PageMap($resultData);
+        $pageMap = new Google_CustomSearch_Response_Item_PageMap($pageMapData);
 
-        return $result;
+        return $pageMap;
     }
 
     /**
      * @depends testConstruct
      */
-    public function testGenericGetters(Google_CustomSearch_Response_Item_PageMap $result)
+    public function testGenericGetters(Google_CustomSearch_Response_Item_PageMap $pageMap)
     {
-        $this->assertTrue($result->hasDataObjects());
-        $this->assertType('array', $result->getDataObjects());
-        $this->assertEquals(2, count($result->getDataObjects()));
+        $this->assertTrue($pageMap->hasDataObjects());
+        $this->assertType('array', $pageMap->getDataObjects());
+        $this->assertEquals(2, count($pageMap->getDataObjects()));
+        foreach($pageMap->getDataObjects() as $dataObject)
+        {
+            $this->assertType('Google_CustomSearch_Response_Item_PageMap_DataObject', $dataObject);
+        }
+
+        $this->assertNull($pageMap->getDataObject('invalid_1'));
+        $this->assertType('Google_CustomSearch_Response_Item_PageMap_DataObject', $pageMap->getDataObject('test2'));
     }
 }

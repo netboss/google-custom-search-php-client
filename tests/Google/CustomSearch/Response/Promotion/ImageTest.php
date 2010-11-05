@@ -10,37 +10,37 @@ class Google_CustomSearch_Response_Promotion_ImageTest extends PHPUnit_Framework
 
     public function testConstruct()
     {
-        $resultData = new stdClass();
-        $resultData->invalid_1 = '1';
-        $resultData->height = '2';
-        $resultData->invalid_2 = '3';
-        $resultData->source = '4';
-        $resultData->invalid_3 = '5';
-        $resultData->width = '6';
+        $imageData = new stdClass();
+        $imageData->invalid_1 = '1';
+        $imageData->height = '2';
+        $imageData->invalid_2 = '3';
+        $imageData->source = '4';
+        $imageData->invalid_3 = '5';
+        $imageData->width = '6';
 
-        $result = new Google_CustomSearch_Response_Promotion_Image($resultData);
+        $image = new Google_CustomSearch_Response_Promotion_Image($imageData);
 
-        return $result;
+        return $image;
     }
 
     /**
      * @depends testConstruct
      */
-    public function testGenericGetters(Google_CustomSearch_Response_Promotion_Image $result)
+    public function testGenericGetters(Google_CustomSearch_Response_Promotion_Image $image)
     {
-        $this->assertEquals(2, $result->getHeight());
-        $this->assertEquals('4', $result->getSource());
-        $this->assertEquals(6, $result->getWidth());
+        $this->assertEquals(2, $image->getHeight());
+        $this->assertEquals('4', $image->getSource());
+        $this->assertEquals(6, $image->getWidth());
     }
 
     public function testIntegerProperties()
     {
-        $resultData = new stdClass();
-        $resultData->height = '1';
-        $resultData->width = '2.00';
-        $result = new Google_CustomSearch_Response_Promotion_Image($resultData);
+        $imageData = new stdClass();
+        $imageData->height = '1';
+        $imageData->width = '2.00';
+        $image = new Google_CustomSearch_Response_Promotion_Image($imageData);
 
-        $this->assertTrue($result->getHeight() === 1);
-        $this->assertTrue($result->getWidth() === 2);
+        $this->assertTrue($image->getHeight() === 1);
+        $this->assertTrue($image->getWidth() === 2);
     }
 }

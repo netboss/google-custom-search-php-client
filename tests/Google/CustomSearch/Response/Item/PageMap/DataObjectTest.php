@@ -10,27 +10,27 @@ class Google_CustomSearch_Response_Item_PageMap_DataObjectTest extends PHPUnit_F
 
     public function testConstruct()
     {
-        $resultData = new stdClass();
-        $resultData->invalid_1 = '1';
-        $resultData->property_1 = '2';
-        $resultData->invalid_2 = '3';
-        $resultData->property_2 = '4';
-        $resultData->invalid_3 = '5';
-        $resultData->property_3 = array();
+        $dataObjectData = new stdClass();
+        $dataObjectData->invalid_1 = '1';
+        $dataObjectData->property_1 = '2';
+        $dataObjectData->invalid_2 = '3';
+        $dataObjectData->property_2 = '4';
+        $dataObjectData->invalid_3 = '5';
+        $dataObjectData->property_3 = array();
 
-        $result = new Google_CustomSearch_Response_Item_PageMap_DataObject($resultData);
+        $dataObject = new Google_CustomSearch_Response_Item_PageMap_DataObject($dataObjectData);
 
-        return $result;
+        return $dataObject;
     }
 
     /**
      * @depends testConstruct
      */
-    public function testGenericGetters(Google_CustomSearch_Response_Item_PageMap_DataObject $result)
+    public function testGenericGetters(Google_CustomSearch_Response_Item_PageMap_DataObject $dataObject)
     {
-        $this->assertEquals('2', $result->getProperty('property_1'));
-        $this->assertEquals('4', $result->getProperty('property_2'));
-        $this->assertEquals('1', $result->getProperty('invalid_1'));
-        $this->assertEquals(array(), $result->getProperty('property_3'));
+        $this->assertEquals('2', $dataObject->getProperty('property_1'));
+        $this->assertEquals('4', $dataObject->getProperty('property_2'));
+        $this->assertEquals('1', $dataObject->getProperty('invalid_1'));
+        $this->assertEquals(array(), $dataObject->getProperty('property_3'));
     }
 }

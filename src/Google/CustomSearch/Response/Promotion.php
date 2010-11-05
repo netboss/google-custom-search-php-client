@@ -1,13 +1,15 @@
 <?php
 
 require_once(dirname(__FILE__).'/Data/DataAbstract.php');
+require_once(dirname(__FILE__).'/Promotion/BodyLine.php');
 require_once(dirname(__FILE__).'/Promotion/Image.php');
 
 /**
  * Google_CustomSearch_Response_Promotion parses and defines a "promotion" in the API response
  *
  * @author Stephen Melrose <me@stephenmelrose.co.uk>
- * @see https://code.google.com/apis/customsearch/docs/special_results.html#sl
+ * @link https://code.google.com/apis/customsearch/v1/reference.html
+ * @link https://code.google.com/apis/customsearch/docs/special_results.html#sl
  */
 class Google_CustomSearch_Response_Promotion extends Google_CustomSearch_Response_DataAbstract
 {
@@ -18,7 +20,7 @@ class Google_CustomSearch_Response_Promotion extends Google_CustomSearch_Respons
     /**
      * @var array
      */
-    protected $bodyLines;
+    protected $bodyLines = array();
 
     /**
      * @var string
@@ -26,7 +28,7 @@ class Google_CustomSearch_Response_Promotion extends Google_CustomSearch_Respons
     protected $displayLink;
 
     /**
-     * @var string
+     * @var Google_CustomSearch_Response_Promotion_Image
      */
     protected $image;
 
@@ -61,7 +63,13 @@ class Google_CustomSearch_Response_Promotion extends Google_CustomSearch_Respons
         $bodyLines = self::getPropertyFromResponseData('bodyLines', $resultData);
         if (is_array($bodyLines) && isset($bodyLines[0]) && $bodyLines[0] instanceof stdClass)
         {
-            $this->bodyLines = get_class_vars($bodyLines[0]);
+            foreach($bodyLines as $bodyLine)
+            {
+                if ($bodyLine instanceof stdClass)
+                {
+                    array_push($this->bodyLines, new Google_CustomSearch_Response_Promotion_BodyLine($bodyLine));
+                }
+            }
         }
         
         $image = self::getPropertyFromResponseData('image', $resultData);
@@ -81,7 +89,7 @@ class Google_CustomSearch_Response_Promotion extends Google_CustomSearch_Respons
      * @return array
      * @see http://www.google.com/cse/docs/resultsxml.html
      */
-    public function getBodyLines()
+    public function getBodyLine()
     {
         return $this->bodyLines;
     }
@@ -99,7 +107,7 @@ class Google_CustomSearch_Response_Promotion extends Google_CustomSearch_Respons
     /**
      * Gets the image associated with this subscribed link, if there is one.
      *
-     * @return string
+     * @return Google_CustomSearch_Response_Promotion_Image
      */
     public function getImage()
     {
@@ -124,5 +132,16 @@ class Google_CustomSearch_Response_Promotion extends Google_CustomSearch_Respons
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Determines if there are block objects for this subscribed link.
+     *
+     * @return boolean
+     * @see http://www.google.com/cse/docs/resultsxml.html
+     */
+    public function hasBodyLine()
+    {
+        return count($this->getBodyLine()) > 0;
     }
 }

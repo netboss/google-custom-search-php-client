@@ -10,24 +10,24 @@ class Google_CustomSearch_Response_Context_FacetTest extends PHPUnit_Framework_T
 
     public function testConstruct()
     {
-        $resultData = new stdClass();
-        $resultData->invalid_1 = '1';
-        $resultData->anchor = '2';
-        $resultData->invalid_2 = '3';
-        $resultData->label = '4';
-        $resultData->invalid_3 = '5';
+        $facetData = new stdClass();
+        $facetData->invalid_1 = '1';
+        $facetData->anchor = '2';
+        $facetData->invalid_2 = '3';
+        $facetData->label = '4';
+        $facetData->invalid_3 = '5';
 
-        $result = new Google_CustomSearch_Response_Context_Facet($resultData);
+        $facet = new Google_CustomSearch_Response_Context_Facet($facetData);
 
-        return $result;
+        return $facet;
     }
 
     /**
      * @depends testConstruct
      */
-    public function testGenericGetters(Google_CustomSearch_Response_Context_Facet $result)
+    public function testGenericGetters(Google_CustomSearch_Response_Context_Facet $facet)
     {
-        $this->assertEquals('2', $result->getAnchor());
-        $this->assertEquals('4', $result->getLabel());
+        $this->assertEquals('2', $facet->getAnchor());
+        $this->assertEquals('4', $facet->getLabel());
     }
 }

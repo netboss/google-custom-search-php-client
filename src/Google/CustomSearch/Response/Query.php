@@ -6,6 +6,7 @@ require_once(dirname(__FILE__).'/Data/DataAbstract.php');
  * Google_CustomSearch_Response_Query parses and defines a "query" in the API response
  * 
  * @author Stephen Melrose <me@stephenmelrose.co.uk>
+ * @link https://code.google.com/apis/customsearch/v1/reference.html
  */
 class Google_CustomSearch_Response_Query extends Google_CustomSearch_Response_DataAbstract
 {
