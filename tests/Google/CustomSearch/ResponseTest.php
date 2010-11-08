@@ -315,4 +315,26 @@ class Google_CustomSearch_ResponseTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($currentPageIndex === $response->getCurrentPageIndex());
     }
+
+    public function dataGetTotalResults()
+    {
+        $fixtures_dir = self::getFixturesDir();
+
+        return array(
+            array($fixtures_dir . 'queries_missing.json'),
+            array($fixtures_dir . 'totalresults_invalid_1.json', 0),
+            array($fixtures_dir . 'totalresults_valid.json', 213456)
+        );
+    }
+
+    /**
+     * @dataProvider dataGetTotalResults
+     */
+    public function testGetTotalResults($fixture, $expectedTotalResults = 0)
+    {
+        $response = new Google_CustomSearch_Response(file_get_contents($fixture));
+
+        $this->assertEquals($expectedTotalResults, $response->getTotalResutls());
+        $this->assertTrue($expectedTotalResults === $response->getTotalResutls());
+    }
 }

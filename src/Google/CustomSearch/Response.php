@@ -425,6 +425,22 @@ class Google_CustomSearch_Response
     }
 
     /**
+     * Gets the total number of search results for this search.
+     * 
+     * @return integer
+     */
+    public function getTotalResutls()
+    {
+        $requestQuery = $this->getQuery(self::QUERY_REQUEST);
+        if (!$requestQuery)
+        {
+            return 0;
+        }
+
+        return intval($requestQuery->getTotalResults());
+    }
+
+    /**
      * Determines if there is metadata about the particular search engine
      * that was used for performing the search query.
      *
