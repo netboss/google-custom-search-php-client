@@ -18,6 +18,16 @@ class Google_CustomSearch_Adapter_Curl implements Google_CustomSearch_AdapterInt
      */
     public function executeRequest($url)
     {
+        if (!function_exists('curl_init'))
+        {
+            // @codeCoverageIgnoreStart
+            throw new Google_CustomSearch_ErrorException(
+                'PHP cURL functions not found. Please make sure cURL is installed and enabled.',
+                Google_CustomSearch_ErrorException::ADAPTER_CURL_MISSING
+            );
+            // @codeCoverageIgnoreEnd
+        }
+
         $handle = @curl_init();
         if (!$handle)
         {
