@@ -20,6 +20,8 @@ Simply download the client library and add the `src` folder to your project.
 Usage
 -----
 
+Performing a Google Custom Search is very simple. For example,
+
     require_once('src/Google/CustomSearch.php');
 
     $search = new Google_CustomSearch('lectures');
@@ -28,7 +30,15 @@ Usage
 
     $response = $search->getResponse();
 
-    var_dump($response);
+The $response variable is now an instance of Google_CustomSearch_Response. This object contains your search results and information about your search, e.g. total number of results, etc.
+
+To iterate over the results, you can do the following,
+
+if ($response->hasResults()) {
+    foreach($response->getResults() as $result) {
+        echo $result->getTitle() . ' - ' . $result->getLink() . '<br />';
+    }
+}
 
 Testing
 -------
