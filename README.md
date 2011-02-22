@@ -30,15 +30,19 @@ Performing a Google Custom Search is very simple. For example,
 
     $response = $search->getResponse();
 
-The $response variable is now an instance of Google_CustomSearch_Response. This object contains your search results and information about your search, e.g. total number of results, etc.
+The `$response` variable is now an instance of `Google_CustomSearch_Response`. This object contains your search results and information about your search, e.g. total number of results, etc.
 
 To iterate over the results, you can do the following,
 
-if ($response->hasResults()) {
-    foreach($response->getResults() as $result) {
-        echo $result->getTitle() . ' - ' . $result->getLink() . '<br />';
+    if ($response->hasResults()) {
+        foreach($response->getResults() as $result) {
+            echo $result->getTitle() . ' - ' . $result->getLink() . '<br />';
+        }
     }
-}
+
+Each single result is an instance of `Google_CustomSearch_Response_Result`.
+
+Please see the [Google Cusom Search API reference][3] for detailed information on the data available in the response.
 
 Testing
 -------
@@ -49,3 +53,4 @@ To run the tests, make sure you have PHPUnit installed, and run,
 
 [1]: https://code.google.com/apis/console/?api=customsearch
 [2]: http://www.google.com/cse/
+[3]: https://code.google.com/apis/customsearch/v1/reference.html
