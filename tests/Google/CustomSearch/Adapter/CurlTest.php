@@ -14,7 +14,7 @@ class Google_CustomSearch_Adapter_CurlTest extends PHPUnit_Framework_TestCase
 
         try
         {
-            $adapter->executeRequest('invalid');
+            $adapter->executeRequest('');
             $this->fail(sprintf('Expected exception "Google_CustomSearch_ErrorException" with code "%s" not thrown.', Google_CustomSearch_ErrorException::ADAPTER_CURL_EXECUTE_FAILED));
         }
         catch (Google_CustomSearch_ErrorException $e)
